@@ -54,6 +54,8 @@ export const loginUser = async (req, res, next) => {
 export const logoutUser = (req, res) => {
     res.cookie('jwt', '', {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' || process.env.VERCEL,
+        sameSite: (process.env.NODE_ENV === 'production' || process.env.VERCEL) ? 'none' : 'lax',
         expires: new Date(0),
     });
     res.json({ message: 'Logged out successfully' });

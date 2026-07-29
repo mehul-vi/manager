@@ -7,8 +7,8 @@ const generateToken = (res, userId) => {
 
     res.cookie('jwt', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        secure: process.env.NODE_ENV === 'production' || process.env.VERCEL, // Must be true for sameSite: 'none'
+        sameSite: (process.env.NODE_ENV === 'production' || process.env.VERCEL) ? 'none' : 'lax', // 'none' allows cross-domain cookies
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 };
