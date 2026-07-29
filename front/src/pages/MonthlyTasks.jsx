@@ -16,7 +16,7 @@ export default function MonthlyTasks() {
         try {
             await Promise.resolve();
             setLoading(true);
-            const res = await api.get('/tasks/monthly');
+            const res = await api.get('/monthly-tasks');
             const allTasks = res.data?.data || res.data || [];
             const filtered = allTasks.filter((task) => {
                 const monthKey = task.targetMonth || (task.date && new Date(task.date).toISOString().slice(0, 7));
@@ -42,7 +42,7 @@ export default function MonthlyTasks() {
 
     const toggleGoalStatus = async (taskId, currentCompleted) => {
         try {
-            await api.patch(`/tasks/monthly/${taskId}`, { completed: !currentCompleted });
+            await api.patch(`/monthly-tasks/${taskId}`, { completed: !currentCompleted });
             setTasks((prev) => prev.map((t) => (t._id === taskId ? { ...t, completed: !currentCompleted } : t)));
             toast.success(currentCompleted ? 'Goal reopened' : 'Goal completed!');
         } catch {
@@ -52,7 +52,7 @@ export default function MonthlyTasks() {
 
     const handleDeleteGoal = async (taskId) => {
         try {
-            await api.delete(`/tasks/monthly/${taskId}`);
+            await api.delete(`/monthly-tasks/${taskId}`);
             setTasks((prev) => prev.filter((t) => t._id !== taskId));
             toast.success('Goal deleted');
         } catch {
@@ -80,12 +80,12 @@ export default function MonthlyTasks() {
         e.preventDefault();
         try {
             if (editingTask) {
-                const res = await api.put(`/tasks/monthly/${editingTask._id}`, formData);
+                const res = await api.put(`/monthly-tasks/${editingTask._id}`, formData);
                 const updated = res.data?.data || res.data;
                 setTasks((prev) => prev.map((t) => (t._id === editingTask._id ? updated : t)));
                 toast.success('Goal updated');
             } else {
-                const res = await api.post('/tasks/monthly', formData);
+                const res = await api.post('/monthly-tasks', formData);
                 const created = res.data?.data || res.data;
                 if ((created.targetMonth || selectedMonth) === selectedMonth) setTasks((prev) => [created, ...prev]);
                 toast.success('Goal created');

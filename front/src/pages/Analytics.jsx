@@ -38,8 +38,8 @@ export default function Analytics() {
             try {
                 setLoading(true);
                 const [dailyRes, monthlyRes] = await Promise.all([
-                    api.get('/tasks/daily'),
-                    api.get('/tasks/monthly'),
+                    api.get('/daily-tasks'),
+                    api.get('/monthly-tasks'),
                 ]);
                 setDailyTasks(dailyRes.data?.data || dailyRes.data || []);
                 setMonthlyTasks(monthlyRes.data?.data || monthlyRes.data || []);

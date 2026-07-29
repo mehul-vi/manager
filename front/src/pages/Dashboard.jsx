@@ -18,8 +18,8 @@ export default function Dashboard() {
             const todayStr = new Date().toISOString().split('T')[0];
 
             const [dailyRes, monthlyRes, notesRes] = await Promise.all([
-                api.get('/tasks/daily'),
-                api.get('/tasks/monthly'),
+                api.get('/daily-tasks'),
+                api.get('/monthly-tasks'),
                 api.get('/notes'),
             ]);
 
@@ -52,7 +52,7 @@ export default function Dashboard() {
 
     const toggleTaskStatus = async (taskId, currentStatus) => {
         try {
-            await api.patch(`/tasks/daily/${taskId}`, { completed: !currentStatus });
+            await api.patch(`/daily-tasks/${taskId}`, { completed: !currentStatus });
             fetchDashboardData();
         } catch (error) {
             console.error('Failed to update task:', error);

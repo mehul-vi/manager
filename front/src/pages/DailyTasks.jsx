@@ -37,7 +37,7 @@ export default function DailyTasks() {
         try {
             await Promise.resolve();
             setLoading(true);
-            const res = await api.get('/tasks/daily');
+            const res = await api.get('/daily-tasks');
             const allTasks = res.data?.data || res.data || [];
 
             // Filter tasks matching selectedDate
@@ -69,7 +69,7 @@ export default function DailyTasks() {
 
     const toggleTaskStatus = async (taskId, currentCompleted) => {
         try {
-            await api.patch(`/tasks/daily/${taskId}`, {
+            await api.patch(`/daily-tasks/${taskId}`, {
                 completed: !currentCompleted,
             });
             setTasks((prev) =>
@@ -85,7 +85,7 @@ export default function DailyTasks() {
 
     const handleDeleteTask = async (taskId) => {
         try {
-            await api.delete(`/tasks/daily/${taskId}`);
+            await api.delete(`/daily-tasks/${taskId}`);
             setTasks((prev) => prev.filter((t) => t._id !== taskId));
             toast.success('Task deleted');
         } catch {
@@ -120,14 +120,14 @@ export default function DailyTasks() {
         e.preventDefault();
         try {
             if (editingTask) {
-                const res = await api.put(`/tasks/daily/${editingTask._id}`, formData);
+                const res = await api.put(`/daily-tasks/${editingTask._id}`, formData);
                 const updated = res.data?.data || res.data;
                 setTasks((prev) =>
                     prev.map((t) => (t._id === editingTask._id ? updated : t))
                 );
                 toast.success('Task updated');
             } else {
-                const res = await api.post('/tasks/daily', formData);
+                const res = await api.post('/daily-tasks', formData);
                 const created = res.data?.data || res.data;
                 if (formData.date === selectedDate) {
                     setTasks((prev) => [created, ...prev]);

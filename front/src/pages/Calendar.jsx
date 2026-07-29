@@ -19,7 +19,7 @@ export default function CalendarPage() {
         const fetch = async () => {
             try {
                 setLoading(true);
-                const res = await api.get('/tasks/daily');
+                const res = await api.get('/daily-tasks');
                 setDailyTasks(res.data?.data || res.data || []);
             } catch {
                 // silently fail
