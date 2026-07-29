@@ -61,24 +61,12 @@ app.get('/', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'API is operational' });
 });
 
-// Serve Frontend in Production
-if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    app.use(express.static(path.join(__dirname, '../public')));
-    app.get('*', (req, res) => {
-        if (!req.path.startsWith('/api')) {
-            res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
-        } else {
-            res.status(404).json({ message: 'API route not found' });
-        }
+// API 404 fallback
+app.use('/api', (req, res) => {
+    res.status(404).json({
+        message: 'API route not found. Check the path and try /api/health or another valid endpoint.',
     });
-} else {
-    // API 404 fallback for local dev
-    app.use('/api', (req, res) => {
-        res.status(404).json({
-            message: 'API route not found. Check the path and try /api/health or another valid endpoint.',
-        });
-    });
-}
+});
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
