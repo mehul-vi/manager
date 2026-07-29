@@ -49,9 +49,23 @@ app.use('/api/monthly-tasks', monthlyTaskRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
+// API root route
+app.get('/api', (req, res) => {
+    res.status(200).json({
+        message: 'API root. Use /api/health or one of the API endpoints under /api/auth, /api/daily-tasks, /api/monthly-tasks, /api/notes, /api/analytics',
+    });
+});
+
 // Healthcheck Route
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'API is operational' });
+});
+
+// API 404 fallback
+app.use('/api', (req, res) => {
+    res.status(404).json({
+        message: 'API route not found. Check the path and try /api/health or another valid endpoint.',
+    });
 });
 
 // Global Error Handling Middleware
