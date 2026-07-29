@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "npm --prefix front install && npm --prefix front run build"
+    "build": "cd front && npm install && npm run build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
