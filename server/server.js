@@ -34,7 +34,10 @@ app.use(cookieParser());
 // CORS Configuration (Configured for HTTP-only cookies)
 app.use(
     cors({
-        origin: process.env.CLIENT_URL || 'http://localhost:5173',
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+            return callback(null, origin);
+        },
         credentials: true,
     })
 );
