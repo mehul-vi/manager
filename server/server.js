@@ -57,7 +57,7 @@ app.get('/api', (req, res) => {
 });
 
 // Healthcheck Route
-app.get('/api/health', (req, res) => {
+app.get('/', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'API is operational' });
 });
 
