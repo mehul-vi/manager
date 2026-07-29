@@ -10,6 +10,8 @@ export default function Dashboard() {
     const [stats, setStats] = useState({ todayCompleted: 0, todayTotal: 0, monthlyGoalProgress: 0, totalNotes: 0 });
     const [todaysTasks, setTodaysTasks] = useState([]);
     const [recentNotes, setRecentNotes] = useState([]);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [isCreating, setIsCreating] = useState(false);
 
     const fetchDashboardData = async () => {
         try {
@@ -56,6 +58,25 @@ export default function Dashboard() {
             fetchDashboardData();
         } catch (error) {
             console.error('Failed to update task:', error);
+        }
+    };
+
+    const handleCreateTask = async (e) => {
+        e.preventDefault();
+        if (!newTaskTitle.trim()) return;
+        setIsCreating(true);
+        try {
+            await api.post('/daily-tasks', {
+                title: newTaskTitle,
+                date: new Date().toISOString().split('T')[0],
+                priority: 'normal'
+            });
+            setNewTaskTitle('');
+            fetchDashboardData();
+        } catch (error) {
+            console.error('Failed to create task:', error);
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -132,12 +153,28 @@ export default function Dashboard() {
                         <div className="flex items-center gap-2"><Clock className="text-indigo-400" size={18} /><h2 className="text-lg font-semibold text-slate-100">Today's Priorities</h2></div>
                         <Link to="/daily-tasks" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1">View All <ArrowRight size={14} /></Link>
                     </div>
-                    <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl divide-y divide-slate-800/60">
+                    <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl divide-y divide-slate-800/60 overflow-hidden">
+                        <form onSubmit={handleCreateTask} className="p-3 sm:p-4 bg-slate-800/20 flex gap-2">
+                            <input
+                                type="text"
+                                value={newTaskTitle}
+                                onChange={(e) => setNewTaskTitle(e.target.value)}
+                                placeholder="Quick add a task for today..."
+                                className="flex-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 placeholder-slate-500 transition-colors"
+                                disabled={isCreating}
+                            />
+                            <button
+                                type="submit"
+                                disabled={isCreating || !newTaskTitle.trim()}
+                                className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors flex items-center justify-center min-w-[44px]"
+                            >
+                                {isCreating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={18} />}
+                            </button>
+                        </form>
                         {todaysTasks.length === 0 ? (
                             <div className="p-8 text-center space-y-3">
                                 <AlertCircle className="mx-auto text-slate-600" size={28} />
-                                <p className="text-sm text-slate-400">No tasks logged for today.</p>
-                                <Link to="/daily-tasks" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium"><Plus size={14} /> Add First Task</Link>
+                                <p className="text-sm text-slate-400">No other tasks logged for today.</p>
                             </div>
                         ) : (
                             todaysTasks.map((task) => (
