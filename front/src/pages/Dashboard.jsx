@@ -69,7 +69,7 @@ export default function Dashboard() {
             await api.post('/daily-tasks', {
                 title: newTaskTitle,
                 date: new Date().toISOString().split('T')[0],
-                priority: 'normal'
+                priority: 'medium'
             });
             setNewTaskTitle('');
             fetchDashboardData();
